@@ -20,7 +20,18 @@ python3 <this skill's dir>/scripts/open_findings.py /tmp/pr<number>-round.md
 ```
 
 It lists the OPEN findings: BLOCKERs first, then QUESTIONs, then NITs, each
-with its Where, Fix, and Done when. If the file is empty, the reviewer used
+with its Where, Fix, and Done when.
+
+A commit audit keeps its rounds in an issue titled `Review: <branch> ...`, not
+in a PR. Read its last round from the issue comments:
+
+```bash
+gh issue view <n> --json comments --jq '[.comments[] | select(.body | startswith("## Round"))] | last | .body // empty' > /tmp/issue<n>-round.md
+```
+
+Fix the findings on a new branch and open a PR with `open-pr`. Its body says
+`Refs #<n>`, never `Closes #<n>`: the reviewer closes the issue. Reply on the
+issue in step 4 with `gh issue comment`. If the file is empty, the reviewer used
 plain comments: read them with `gh pr view <number> --comments`, and treat
 each requested change as one finding.
 
@@ -58,7 +69,8 @@ F6: not changed. I think the finding is wrong: <evidence>. Waiting for your call
 ```
 
 The comment is ASCII only, with no attribution line. Then ask for a re-review:
-`gh pr edit <number> --add-reviewer <reviewer login>`.
+`gh pr edit <number> --add-reviewer <reviewer login>`. For a commit audit, post
+the reply on the issue and assign it back: `gh issue edit <n> --add-assignee <reviewer login>`.
 
 ## 5. Stop
 
