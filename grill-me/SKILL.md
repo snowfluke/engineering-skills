@@ -1,6 +1,6 @@
 ---
 name: grill-me
-description: Stress-test a plan, design, or decision by interviewing the user one question at a time, each with a recommended answer, until every open branch is decided or deferred. Reads the code and docs instead of asking when they hold the answer, checks terms against GLOSSARY.md and decisions against docs/adr/ when the repo has them, and ends with a decision log file. Use before building, or when the user says "grill me", wants a plan challenged, or wants to align on a design.
+description: Stress-test a plan, design, or decision by interviewing the user one question at a time, each with a recommended answer, until every open branch is decided or deferred. Reads the code and docs instead of asking when they hold the answer, checks terms against docs/GLOSSARY.md and decisions against docs/adr/ when the repo has them, and ends with a decision log file. Use before building, or when the user says "grill me", wants a plan challenged, or wants to align on a design.
 ---
 
 # Grill Me
@@ -43,7 +43,7 @@ Wait for the answer. A "yes" takes your recommendation.
 This step runs only for docs the repo already has. Do not create a glossary or
 an ADR folder.
 
-**`GLOSSARY.md`.** Check every term the user uses against it. When the session
+**`docs/GLOSSARY.md`** (or `GLOSSARY.md` at the root). Check every term the user uses against it. When the session
 settles a term, update the glossary at once, in its existing format: domain
 group, canonical term, UI label if different, and a one-to-two-sentence
 definition. Definitions only, no implementation detail.
@@ -83,7 +83,7 @@ Date: YYYY-MM-DD
 
 ## Docs changed
 
-- GLOSSARY.md: <terms added or changed>
+- docs/GLOSSARY.md: <terms added or changed>
 - docs/adr/NNNN-<slug>.md: <title>
 ```
 
