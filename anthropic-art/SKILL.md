@@ -33,17 +33,17 @@ Primary request: Illustrate [topic] through the single metaphor of [metaphor].
 Scene/backdrop: full-bleed opaque [palette name and hex] background covering every corner; no transparency, no white border, no isolated icon treatment.
 Subject: [one dominant symbolic object or relationship], centered with generous breathing room.
 Style/medium: Anthropic editorial illustration language; naive black ink gesture; thick, slightly uneven, rounded strokes; simplified anatomy and objects; deliberate asymmetry; flat two-dimensional forms.
-Composition/framing: [aspect ratio], one focal cluster occupying roughly 65–80% of the frame; readable at thumbnail size.
+Composition/framing: [aspect ratio], one focal cluster occupying roughly 65 to 80% of the frame; readable at thumbnail size.
 Color palette: near-black #141413 linework; irregular ivory #FAF9F5 carrier shape; one full-frame accent background from the verified palette; at most one tiny secondary accent.
 Materials/textures: clean flat color, subtle analog wobble only; no paper grain unless requested.
 Text (verbatim): "[exact text]" or none.
-Constraints: preserve the two-layer system—accent background behind an irregular ivory carrier shape, with black hand-drawn marks on top; keep the whole canvas opaque.
+Constraints: preserve the two-layer system: accent background behind an irregular ivory carrier shape, with black hand-drawn marks on top; keep the whole canvas opaque.
 Avoid: transparent background, white outer canvas, black outer canvas, photorealism, 3D, gradients, shadows, glossy lighting, fine technical line art, corporate stock-vector polish, dense detail, logo, watermark, copied reference composition.
 ```
 
 ## Background rule
 
-Interpret “带背景” as a full-frame opaque field, not merely a pale blob behind a transparent icon. Place the irregular ivory carrier shape inside that field. Allow black strokes to cross the ivory boundary sparingly, as in the references.
+Interpret "带背景" as a full-frame opaque field, not merely a pale blob behind a transparent icon. Place the irregular ivory carrier shape inside that field. Allow black strokes to cross the ivory boundary sparingly, as in the references.
 
 If the user requests a calmer page-native look, use ivory `#FAF9F5` as the full canvas and distinguish the carrier shape with `#F0EEE6` or `#E8E6DC`. Otherwise choose a muted accent background.
 

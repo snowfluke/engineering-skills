@@ -34,11 +34,11 @@ You have completed a task, all verifications have passed, and you need to commit
 3. **Split into logical commits.** Before staging, scan the diff and group changes by intent. **Do not put unrelated changes into one commit.** A commit should answer a single "why."
 
    Common splits:
-   - Bug fix vs version bump → two commits
-   - Source code change vs test additions for an unrelated module → two commits
-   - Refactor vs new feature → two commits
-   - Code change vs docs/CHANGELOG update for that same code → can be one commit
-   - Code change vs unrelated formatting noise → two commits (or revert the noise)
+   - Bug fix vs version bump -> two commits
+   - Source code change vs test additions for an unrelated module -> two commits
+   - Refactor vs new feature -> two commits
+   - Code change vs docs/CHANGELOG update for that same code -> can be one commit
+   - Code change vs unrelated formatting noise -> two commits (or revert the noise)
 
    If the working tree has multiple intents, commit them in sequence:
 
@@ -109,7 +109,7 @@ You have completed a task, all verifications have passed, and you need to commit
 
    ```bash
    echo -n "chore(auth): remove readme artifact and fix ErrorBoundary [FE-AUTH-06]" | wc -c
-   # must be ≤ 80
+   # must be 80 or fewer
    ```
 
 6. **Create the commit:**
@@ -167,7 +167,7 @@ landed on the default branch, cut the release.
    ```
 
 2. **The title is the version and nothing else:** `vX.Y.Z`. No tagline, no
-   emoji, no "Release"/"🎉", no summary. The body carries the detail.
+   emoji, no "Release", no emoji, no summary. The body carries the detail.
 
 3. **The body is written by the `release-notes` skill.** Invoke it rather
    than pasting the CHANGELOG section in: the changelog is the complete record
@@ -214,5 +214,5 @@ fix bug
 WIP
 added the task thing
 chore: bump demo CDN pin from @4 to @5     # `@4`/`@5` become user mentions
-fix: do thing and also bump version         # two intents — split into two commits
+fix: do thing and also bump version         # two intents: split into two commits
 ```

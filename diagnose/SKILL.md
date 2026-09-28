@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → cover the gap with a test. Use when user says "diagnose this" / "debug this", reports a bug, says something is broken/throwing/failing, or describes a performance regression.
+description: Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce -> minimise -> hypothesise -> instrument -> fix -> cover the gap with a test. Use when user says "diagnose this" / "debug this", reports a bug, says something is broken/throwing/failing, or describes a performance regression.
 ---
 
 # Diagnose
@@ -42,7 +42,7 @@ A 30-second flaky loop is barely better than no loop. A 2-second deterministic l
 
 ### Non-deterministic bugs
 
-The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not. Keep raising the rate until it's debuggable.
+The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100 times, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not. Keep raising the rate until it's debuggable.
 
 ### When you genuinely cannot build a loop
 
@@ -64,7 +64,7 @@ Do not proceed until you reproduce the bug.
 
 ## Phase 3: Hypothesise
 
-Generate **3–5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
+Generate **3 to 5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
 
 Each hypothesis must be **falsifiable**: state the prediction it makes.
 

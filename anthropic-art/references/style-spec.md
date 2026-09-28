@@ -54,10 +54,10 @@ Use at most one accent family. Do not introduce a rainbow palette.
 Build exactly three visual layers:
 
 1. Full-frame opaque accent field covering all corners.
-2. One large irregular ivory carrier shape occupying roughly 55–80% of the canvas.
+2. One large irregular ivory carrier shape occupying roughly 55 to 80% of the canvas.
 3. Near-black gestural linework and solid marks, with occasional controlled spill outside the carrier.
 
-For a square card, keep the focal cluster centered or slightly off-center and sized to roughly 65–80% of the canvas. For a wide hero, move the cluster to one side only when the user needs copy space.
+For a square card, keep the focal cluster centered or slightly off-center and sized to roughly 65 to 80% of the canvas. For a wide hero, move the cluster to one side only when the user needs copy space.
 
 ## Reference roles
 
