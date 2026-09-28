@@ -26,13 +26,35 @@ Agent skills for every engineer on the team. Tech-lead pipeline skills live in
 
 ## Install
 
-Pick the skills you need. Every installed skill adds its description to each
-agent session, so install only what you use.
+Install with the [`skills` CLI](https://github.com/vercel-labs/skills). It works
+with Claude Code, opencode, Codex, and other agents. Every installed skill adds
+its description to each agent session, so install only what you use.
+
+| Goal | Command |
+| --- | --- |
+| See the skills first | `npx skills add snowfluke/engineering-skills -l` |
+| The everyday set, for you in every project | `npx skills add snowfluke/engineering-skills -g -s grill-me -s tdd -s diagnose -s git-commit -s stop-slop` |
+| Choose interactively | `npx skills add snowfluke/engineering-skills -g` |
+
+### One project only
+
+Run the command in the project root without `-g`. The skills go into the
+project, and the CLI writes `skills-lock.json`. Commit both, so the team gets
+the same skills.
 
 ```bash
-npx skills add snowfluke/engineering-skills -l      # list the skills
-npx skills add snowfluke/engineering-skills -g      # choose skills interactively
+cd my-project
+npx skills add snowfluke/engineering-skills -s tdd -s git-commit -a claude-code
 ```
+
+| Agent flag | Skills go to |
+| --- | --- |
+| `-a claude-code` | `.claude/skills/` |
+| `-a opencode`, `-a codex` | `.agents/skills/` |
+
+A teammate restores the project's skills from the lock file with
+`npx skills experimental_install`. That command writes to `.agents/skills/`.
+On Claude Code, run the `add` command above with `-a claude-code` instead.
 
 ## Edit and publish (maintainer)
 
