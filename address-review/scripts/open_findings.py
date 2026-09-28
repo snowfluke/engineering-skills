@@ -12,7 +12,8 @@ import re
 import sys
 
 ROW_RE = re.compile(r"^\| (F\d+) \| (.+) \| (BLOCKER|NIT|QUESTION) \| (OPEN|RESOLVED|DECLINED|ANSWERED) \|$")
-HEAD_RE = re.compile(r"^### (F\d+) · (.+) · (BLOCKER|NIT|QUESTION)$")
+# The middle dot is the separator of rounds posted before the ASCII switch.
+HEAD_RE = re.compile(r"^### (F\d+) (?:\||\u00b7) (.+) (?:\||\u00b7) (BLOCKER|NIT|QUESTION)$")
 FIELD_RE = re.compile(r"^\*\*(Where|Problem|Fix|Done when|Question|Bug if):\*\* (.+)$")
 ORDER = {"BLOCKER": 0, "QUESTION": 1, "NIT": 2}
 
@@ -49,7 +50,7 @@ def render(findings):
 
 
 def self_test():
-    body = """## Round 2 · Request Changes
+    body = """## Round 2 | Request Changes
 
 **Gate:** passes.
 **CI:** Passes.
@@ -63,7 +64,7 @@ def self_test():
 
 ---
 
-### F2 · Dead check · NIT
+### F2 | Dead check | NIT
 
 **Where:** `b.ts:9`
 **Problem:** The null check never fires.
@@ -72,7 +73,7 @@ def self_test():
 
 ---
 
-### F3 · Retry source · QUESTION
+### F3 | Retry source | QUESTION
 
 **Where:** `c.ts:4`
 **Question:** Does the vendor cap retries at 3?
@@ -80,7 +81,7 @@ def self_test():
 
 ---
 
-### F4 · Missing test · BLOCKER
+### F4 | Missing test | BLOCKER
 
 **Where:** `a.test.ts:10`
 **Problem:** The owner branch has no test.
@@ -93,6 +94,8 @@ def self_test():
     assert found[1]["Bug if"].startswith("The vendor")
     assert "F1" not in render(found), "a RESOLVED finding must not be listed"
     assert render([]) == "No OPEN findings.\n"
+    legacy = "\n".join(l.replace(" | ", " \u00b7 ") if l.startswith("### F") else l for l in body.split("\n"))
+    assert open_findings(legacy) == found, "a round with the old middle-dot headings must parse"
     print("self-test OK")
 
 
