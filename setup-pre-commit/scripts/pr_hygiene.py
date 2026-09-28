@@ -47,7 +47,7 @@ REQUIRED_KEYS = ("branch", "commit-subject", "forbidden", "pr-heading", "test-fi
 AC_ID = r"\bAC-\d+(?:\.\d+)*\b"
 # The brackets keep this file from matching its own patterns when a PR adds it.
 UNFINISHED = re.compile(r"\bTO[D]O\b|\bFI[X]ME\b|\bX[X]X\b|not [i]mplemented|\b(?:it|test|describe)\.(?:s[k]ip|o[n]ly|t[o]do)\(|\bx(?:it|describe)\(|\bt\.S[k]ip\(|mark\.s[k]ip", re.I)
-LEFTOVER = re.compile(r"\b(still open|not yet|follow[- ]?ups?|left for later|later PR|remaining (?:work|items?|gaps?)|gaps?|partial(?:ly)?|half[- ]done|out of scope|W[I]P|TO[D]O)\b", re.I)
+LEFTOVER = re.compile(r"\b(still open|not yet|follow[- ]?ups?|left for later|later PR|remaining (?:work|items?|gaps?)|gaps? (?:remains?|left)|partial(?:ly)? (?:done|implemented|complete)|half[- ]done|out of scope|W[I]P|TO[D]O)\b", re.I)
 WORK_REF = re.compile(r"#\d+|\b(?!AC-|US-)[A-Z][A-Z0-9]*-(?:S\d+-)?\d+\b")
 STANDARD_PATHS = ("docs/coding-standard", "docs/CODING_STANDARD.md", "CODING_STANDARD.md",
                   "docs/CODING_STANDARDS.md", "CODING_STANDARDS.md")
@@ -170,7 +170,7 @@ def added_lines(diff):
 
 def prose_lines(body):
     fence = False
-    for line in body.splitlines():
+    for line in re.sub(r"<!--.*?-->", "", body, flags=re.S).splitlines():
         if line.lstrip().startswith("```"):
             fence = not fence
         elif not fence and not line.startswith("#"):
@@ -287,6 +287,7 @@ tests-required: BE FE
     assert check_pr("feat: CSV export", done + "- AC-29.02 filters\n", b, ok, rules, read_file=rd), "AC without a test not caught"
     assert check_pr("feat: CSV export", done.replace("29.01", "29.1"), b, ok, rules, read_file=rd), "AC-29.1 must not match AC-29.10"
     assert check_pr("chore: deps", done + "- AC-29.02\n", "chore/TL-S2-01-deps", ["package.json"], rules, read_file=rd) == [], "a chore needs no AC test"
+    assert check_pr("feat: x", done + "<!-- List what is out of scope -->\nFills the gap between tasks.\nA partial update route.\n", b, ok, rules, read_file=rd) == [], "comments and feature words must pass"
     for left in ("One gap remains in the filter.", "Filtering is still open.", "Sorting is a follow-up.", "Partially done."):
         assert check_pr("feat: CSV export", done + left + "\n", b, ok, rules, read_file=rd), f"leftover not caught: {left}"
     assert check_pr("feat: CSV export", done + "Sorting is a follow-up in BE-S2-06.\n", b, ok, rules, read_file=rd) == [], "a named card must pass"

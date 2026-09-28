@@ -66,6 +66,7 @@ If the work is not done and you cannot finish it, do not open the PR.
 gh pr create --base <base> --title "$(cat /tmp/pr-title.txt)" --body-file /tmp/pr-body.md
 ```
 
-If the project files an issue per card, put `Closes #<issue>` in the Card
-section, and move the issue's board card to the review column. If it does not,
+If the card is an issue (a Fix), or the project files an issue per card, put
+`Closes #<issue>` in the Card section, and move the issue's board card to the
+review column. If it does not,
 reference the card ID only. Report the PR URL.
