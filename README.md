@@ -16,7 +16,7 @@ Agent skills for every engineer on the team. Tech-lead pipeline skills live in
 | Session | `bro` | Re-explain the last answer in plain words |
 | Session | `caveman` | Answer in terse caveman style |
 | Writing | `stop-slop` | Remove AI writing patterns from prose |
-| Setup | `setup-pre-commit` | Add Husky pre-commit hooks with lint-staged, type checks, and tests |
+| Setup | `setup-pre-commit` | Add pre-commit hooks that format, lint, and type-check staged files (oxfmt and oxlint by default) |
 | Setup | `git-guardrails-claude-code` | Add Claude Code hooks that block dangerous git commands |
 | Media | `anthropic-art` | Draw editorial illustrations in Anthropic's hand-drawn style |
 | Media | `app-launch-video` | Build a 90 s to 3 min launch video for an app you have the source of |

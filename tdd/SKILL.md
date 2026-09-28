@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Build a feature or fix a bug test-first, one behaviour at a time. Derives the behaviour list from the task, issue, or acceptance criteria, follows the project's own test rules, proves every new test can fail by breaking the code once after green, and hands off to git-commit when the list is done. Use when the user wants TDD, test-first development, red-green-refactor, or a bug fix that starts with a failing test.
+description: Build a feature or fix a bug test-first, one behaviour at a time. Derives the behaviour list from the task, issue, or acceptance criteria, follows the project's own test rules, proves every new test can fail by breaking the code once after green, and hands off to git-commit when the list is done. Use when the user wants TDD, test-first development, red-green-refactor, or a bug fix covered by a behaviour test.
 ---
 
 # Test-Driven Development
@@ -21,8 +21,10 @@ only where the project says nothing.
 ## 2. List the behaviours
 
 Take the behaviours from the task: the issue, the task card, or each THEN clause
-of the acceptance criteria. For a bug, the first behaviour is the bug itself,
-reproduced as a failing test.
+of the acceptance criteria. For a bug, first check whether an existing
+behaviour test should have caught it. If one should have, make it fail on the
+bug, then fix the code. Add a new test only when no behaviour test covers the
+case.
 
 Write each behaviour as one observable outcome at the public interface, for
 example "refuses an adapter the project does not own". Order the list so the
@@ -48,6 +50,9 @@ Use these only where the project has no rule of its own.
 - One behaviour per test, named after the behaviour.
 - No conditionals in a test.
 - A test that breaks when you rename an internal function tests the implementation. Rewrite it.
+- No change-detector tests: no re-recorded snapshots, no assertions on internal calls or private structure.
+- For a complex feature, the e2e test covers a realistic scenario of medium or high complexity, with a failure or permission path, not only the simplest success case.
+- Run e2e tests light: only the affected specs, the project's worker cap, one headless browser. Stop every server and browser you start.
 
 ## 5. Refactor on green
 
