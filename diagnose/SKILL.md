@@ -9,18 +9,18 @@ A discipline for hard bugs. Skip phases only when explicitly justified.
 
 When exploring the codebase, use the project's domain glossary to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
-## Phase 1 — Build a feedback loop
+## Phase 1: Build a feedback loop
 
-**This is the skill.** Everything else is mechanical. If you have a fast, deterministic, agent-runnable pass/fail signal for the bug, you will find the cause — bisection, hypothesis-testing, and instrumentation all just consume that signal. If you don't have one, no amount of staring at code will save you.
+**This is the skill.** Everything else is mechanical. If you have a fast, deterministic, agent-runnable pass/fail signal for the bug, you will find the cause: bisection, hypothesis-testing, and instrumentation all just consume that signal. If you don't have one, no amount of staring at code will save you.
 
 Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
 
-### Ways to construct one — try them in roughly this order
+### Ways to construct one, in roughly this order
 
-1. **Failing test** at whatever seam reaches the bug — unit, integration, e2e.
+1. **Failing test** at whatever seam reaches the bug: unit, integration, e2e.
 2. **Curl / HTTP script** against a running dev server.
 3. **CLI invocation** with a fixture input, diffing stdout against a known-good snapshot.
-4. **Headless browser script** (Playwright / Puppeteer) — drives the UI, asserts on DOM/console/network.
+4. **Headless browser script** (Playwright / Puppeteer). It drives the UI and asserts on DOM/console/network.
 5. **Replay a captured trace.** Save a real network request / payload / event log to disk; replay it through the code path in isolation.
 6. **Throwaway harness.** Spin up a minimal subset of the system (one service, mocked deps) that exercises the bug code path with a single function call.
 7. **Property / fuzz loop.** If the bug is "sometimes wrong output", run 1000 random inputs and look for the failure mode.
@@ -42,7 +42,7 @@ A 30-second flaky loop is barely better than no loop. A 2-second deterministic l
 
 ### Non-deterministic bugs
 
-The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not — keep raising the rate until it's debuggable.
+The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not. Keep raising the rate until it's debuggable.
 
 ### When you genuinely cannot build a loop
 
@@ -50,19 +50,19 @@ Stop and say so explicitly. List what you tried. Ask the user for: (a) access to
 
 Do not proceed to Phase 2 until you have a loop you believe in.
 
-## Phase 2 — Reproduce
+## Phase 2: Reproduce
 
 Run the loop. Watch the bug appear.
 
 Confirm:
 
-- [ ] The loop produces the failure mode the **user** described — not a different failure that happens to be nearby. Wrong bug = wrong fix.
+- [ ] The loop produces the failure mode the **user** described, not a different failure that happens to be nearby. Wrong bug = wrong fix.
 - [ ] The failure is reproducible across multiple runs (or, for non-deterministic bugs, reproducible at a high enough rate to debug against).
 - [ ] You have captured the exact symptom (error message, wrong output, slow timing) so later phases can verify the fix actually addresses it.
 
 Do not proceed until you reproduce the bug.
 
-## Phase 3 — Hypothesise
+## Phase 3: Hypothesise
 
 Generate **3–5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
 
@@ -70,11 +70,11 @@ Each hypothesis must be **falsifiable**: state the prediction it makes.
 
 > Format: "If <X> is the cause, then <changing Y> will make the bug disappear / <changing Z> will make it worse."
 
-If you cannot state the prediction, the hypothesis is a vibe — discard or sharpen it.
+If you cannot state the prediction, the hypothesis is a vibe. Discard or sharpen it.
 
-**Show the ranked list to the user before testing.** They often have domain knowledge that re-ranks instantly ("we just deployed a change to #3"), or know hypotheses they've already ruled out. Cheap checkpoint, big time saver. Don't block on it — proceed with your ranking if the user is AFK.
+**Show the ranked list to the user before testing.** They often have domain knowledge that re-ranks instantly ("we just deployed a change to #3"), or know hypotheses they've already ruled out. Cheap checkpoint, big time saver. Don't block on it. Proceed with your ranking if the user is away.
 
-## Phase 4 — Instrument
+## Phase 4: Instrument
 
 Each probe must map to a specific prediction from Phase 3. **Change one variable at a time.**
 
@@ -88,9 +88,9 @@ Tool preference:
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
 
-## Phase 5 — Fix + cover the gap
+## Phase 5: Fix and cover the gap
 
-First check the existing behaviour tests. If one should have caught this bug, it is wrong: make it fail on the repro, apply the fix, and watch it pass. Add a new regression test only when no behaviour test covers the case.
+First check the existing behaviour tests. If one should have caught this bug, it is wrong: make it fail on the repro, apply the fix, and watch it pass. Add a new regression test only when no behaviour test covers the case. The `tdd` skill has the full test rules.
 
 Write that new test **before the fix**, and only if there is a **correct seam** for it.
 
@@ -106,15 +106,16 @@ If a correct seam exists:
 4. Watch it pass.
 5. Re-run the Phase 1 feedback loop against the original (un-minimised) scenario.
 
-## Phase 6 — Cleanup + post-mortem
+## Phase 6: Cleanup and post-mortem
 
 Required before declaring done:
 
 - [ ] Original repro no longer reproduces (re-run the Phase 1 loop)
 - [ ] A behaviour test fails without the fix and passes with it: an existing test corrected, or a new one for a real gap (or the missing seam is documented)
 - [ ] Every server, watcher, or browser started for the repro is stopped
+- [ ] The fix and its test are handed to `git-commit`
 - [ ] All `[DEBUG-...]` instrumentation removed (`grep` the prefix)
 - [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
-- [ ] The hypothesis that turned out correct is stated in the commit / PR message — so the next debugger learns
+- [ ] The hypothesis that turned out correct is stated in the commit or PR message, so the next debugger learns
 
-**Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/improve-codebase-architecture` skill with the specifics. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
+**Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) write it down as a finding with the specifics, and raise it with the tech lead. Make the recommendation **after** the fix is in, not before. You have more information now than when you started.

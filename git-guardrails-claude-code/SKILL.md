@@ -80,7 +80,7 @@ Add to the appropriate settings file:
 }
 ```
 
-If the settings file already exists, merge the hook into existing `hooks.PreToolUse` array — don't overwrite other settings.
+If the settings file already exists, merge the hook into existing `hooks.PreToolUse` array. Do not overwrite other settings.
 
 ### 4. Ask about customization
 

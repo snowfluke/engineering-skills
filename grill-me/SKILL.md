@@ -54,7 +54,7 @@ definition. Definitions only, no implementation detail.
 2. A future reader will be surprised by it without the context.
 3. It came from a real trade-off between genuine alternatives.
 
-If the user accepts, write `docs/adr/NNNN-<slug>.md` with the next free number.
+If the user accepts, write `docs/adr/NNNN-<slug>.md` with the next free number: one above the highest `NNNN` in `docs/adr/`.
 Follow the format of the existing ADRs. If they have none to copy, write a title
 and one paragraph: the context, the decision, and why.
 

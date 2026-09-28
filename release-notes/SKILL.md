@@ -76,7 +76,7 @@ Skip any section with nothing in it. A release with one bug fix gets three sente
 
 ## Rules
 
-- **Verify every claim against the published artifact.** Install from the registry into a temp directory and run the examples there. Working tree output is not evidence of what shipped. Every number, size, and sample must come from a command you actually ran.
+- **Verify every claim against the published artifact.** Install or deploy the published artifact (a registry package, a container image, or a binary release) in a temp directory, and run the examples there. Working tree output is not evidence of what shipped. Every number, size, and sample must come from a command you actually ran.
 - **Show real output.** Paste what the command printed.
 - **Do not showcase a known bug.** If the best example exposes a limitation, choose another.
 - **Date it.** The reader needs to know how old the release is.
@@ -93,11 +93,7 @@ Skip any section with nothing in it. A release with one bug fix gets three sente
 gh release edit <tag> --notes-file notes.md
 ```
 
-Recreating a release fires `release: published` again. If the repo publishes to a registry on that event, the re-run fails on a duplicate version and can leave one registry ahead of the other. `gh release edit` fires `release: edited`, which nothing normally listens for. Check first:
-
-```bash
-grep -A3 "^on:" .github/workflows/*.yml | grep -B1 -A2 release
-```
+Recreating a release fires `release: published` again. If the repo publishes to a registry on that event, the re-run fails on a duplicate version and can leave one registry ahead of the other. `gh release edit` fires `release: edited`, which nothing normally listens for. Check first: open each file in `.github/workflows/`, find the `on:` block, and note every `release` trigger and the event types it lists.
 
 Write the notes to a scratch file, not into the repo. The notes are GitHub state; the changelog is the committed record.
 

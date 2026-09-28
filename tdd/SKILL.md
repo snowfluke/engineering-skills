@@ -35,7 +35,7 @@ the user only about what the task leaves open.
 
 1. **Red.** Write one test for the next behaviour. Run it. It must fail on its assertion. A failure from a missing import or a syntax error does not count.
 2. **Green.** Write the least code that makes it pass. Add nothing for later behaviours.
-3. **Prove.** Break the implementation once: invert the condition, or delete the branch. Run the test. It must go red. Restore the code. If the test stays green, it tests nothing; rewrite it.
+3. **Prove.** Break the implementation once: invert the condition, delete the branch, or return a wrong value. Run the test. It must go red. Restore the code. If the test stays green, it tests nothing; rewrite it.
 4. Run the tests for the area you touch. Go to the next behaviour.
 
 Do not refactor while a test is red.

@@ -11,7 +11,7 @@ You have completed a task, all verifications have passed, and you need to commit
 
 ## Steps
 
-1. **Run final verification — all must pass.** Use the project's own gate: type-check (if the language has one), tests, lint, and format. Read the project manifest / task runner for the exact commands (e.g. `package.json` scripts, `Makefile`, `justfile`, `cargo`, `go`, `mix`, `pytest`).
+1. **Run final verification. All checks must pass.** Use the project's own gate: type-check (if the language has one), tests, lint, and format. Read the project manifest / task runner for the exact commands (e.g. `package.json` scripts, `Makefile`, `justfile`, `cargo`, `go`, `mix`, `pytest`).
 
    Example (bun + TypeScript):
 
@@ -54,7 +54,7 @@ You have completed a task, all verifications have passed, and you need to commit
 
    When uncertain whether two changes belong together, the test is: "Could someone want to revert one without the other?" If yes, split.
 
-4. **Stage the relevant files for the current commit.** Be explicit — do not use `git add -A` blindly:
+4. **Stage the relevant files for the current commit.** Be explicit. Do not use `git add -A` blindly:
 
    ```bash
    git add apps/api/src/modules/projects/
@@ -68,7 +68,7 @@ You have completed a task, all verifications have passed, and you need to commit
    - Lockfile changes for unrelated packages (e.g. `bun.lock`, `package-lock.json`, `Cargo.lock`, `go.sum`, `poetry.lock`)
    - Build output (e.g. `dist/`, `.next/`, `target/`, `build/`, `__pycache__/`)
 
-5. **Compose the commit message** using Conventional Commits:
+5. **Compose the commit message.** First check the project's own convention: `CONTRIBUTING.md`, a `commitlint.config.*` file, a commit-msg hook, and the style of `git log --oneline -20`. The project's convention wins. Where it says nothing, use Conventional Commits:
 
    Format: `<type>(<scope>): <subject>`
 
@@ -85,7 +85,7 @@ You have completed a task, all verifications have passed, and you need to commit
    Scope: the module or layer changed (e.g., `auth`, `tasks`, `gantt`, `db`, `ci`)
 
    Subject rules:
-   - Imperative mood: "add", "fix", "refactor" — not "added" or "fixing"
+   - Imperative mood: "add", "fix", "refactor", not "added" or "fixing"
    - **Max 80 characters for the entire first line** (`type(scope): subject [ID]` combined). A commit-msg hook (e.g. husky/commitlint) often enforces this for the subject line.
    - No period at end
    - Reference task ID when applicable: `[BE-S2-02]`
@@ -96,18 +96,14 @@ You have completed a task, all verifications have passed, and you need to commit
    - One blank line between subject and body.
    - One blank line between paragraphs in the body.
 
-   **Before writing the commit, count the longest line in the full message:**
+   **Before committing, write the message to a file and check every line:**
 
    ```bash
-   git commit -m "$(cat <<'EOF'
-   <your-commit-message>
-   EOF
-   )" --dry-run >/dev/null 2>&1 || true
-   # Then sanity-check line lengths:
-   awk '{ if (length > 80) print "TOO LONG (" length "): " $0 }' <<'EOF'
-   <paste full message here>
-   EOF
+   awk 'length > 80 { print "TOO LONG (" length "): " $0 }' /tmp/commit-msg.txt
+   git commit -F /tmp/commit-msg.txt
    ```
+
+   No output from `awk` means every line fits.
 
    For quick subject-only checks:
 
@@ -149,7 +145,7 @@ You have completed a task, all verifications have passed, and you need to commit
 When the commit is a release (`chore: release vX.Y.Z`) and the version bump has
 landed on the default branch, cut the release.
 
-1. **Create the tag and release.** For most repos, the one-liner is fine — it
+1. **Create the tag and release.** For most repos, the one-liner is fine: it
    creates the tag at the branch tip:
 
    ```bash
@@ -158,7 +154,7 @@ landed on the default branch, cut the release.
 
    **Only if the project requires *signed* tags** (OpenSSF Best Practices Gold
    `version_tags_signed`, or an org supply-chain policy): `gh release create
-   --target` makes an *unsigned* server-side tag — and `tag.gpgSign=true` does
+   --target` makes an *unsigned* server-side tag, and `tag.gpgSign=true` does
    NOT help, because gh creates the tag server-side, bypassing local git
    signing. You must tag locally (which signs per config), push it, then create
    the release from the existing tag (no `--target`):
@@ -170,13 +166,13 @@ landed on the default branch, cut the release.
    git verify-tag vX.Y.Z
    ```
 
-2. **The title is the version and nothing else** — `vX.Y.Z`. No tagline, no
+2. **The title is the version and nothing else:** `vX.Y.Z`. No tagline, no
    emoji, no "Release"/"🎉", no summary. The body carries the detail.
 
 3. **The body is written by the `release-notes` skill.** Invoke it rather
    than pasting the CHANGELOG section in: the changelog is the complete record
    for existing users, the notes are for someone deciding whether to adopt.
-   State facts only — no marketing, no filler ("we're excited to", "huge
+   State facts only: no marketing, no filler ("we're excited to", "huge
    improvements"), no slop. The `@<name>`/`@<digit>` rule applies there too:
    never in release notes (use `v4` or backticks).
 

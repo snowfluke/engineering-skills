@@ -25,14 +25,14 @@ hand-off, in the optional pre-push hook, and in CI.
 
 ## 2. Install
 
-Install as dev dependencies: `husky`, `lint-staged`, and the formatter and linter from step 1 if they are not installed yet. Then run `<pm> exec husky init` (for npm: `npx husky init`). It creates `.husky/` and adds `"prepare": "husky"` to the manifest.
+Install as dev dependencies: `husky`, `lint-staged`, and the formatter and linter from step 1 if they are not installed yet. Then run `<x> husky init`, where `<x>` is the package runner: `bunx` on bun, `npx` on npm, `pnpm exec` on pnpm, `yarn exec` on yarn. Do not use `bun exec`: it runs a shell script, not a package binary. It creates `.husky/` and adds `"prepare": "husky"` to the manifest.
 
 ## 3. Write the hooks
 
 `.husky/pre-commit` (Husky v9+ needs no shebang):
 
 ```sh
-<pm> exec lint-staged
+<x> lint-staged
 <pm> run type-check
 ```
 
@@ -40,7 +40,7 @@ Install as dev dependencies: `husky`, `lint-staged`, and the formatter and linte
 
 ```json
 {
-  "*.{js,jsx,ts,tsx,mjs,cjs}": ["oxfmt", "oxlint --fix"],
+  "*.{js,jsx,ts,tsx,mjs,cjs}": ["oxlint --fix", "oxfmt"],
   "*.{json,md,css,yml,yaml}": ["oxfmt"]
 }
 ```
@@ -56,7 +56,7 @@ If the user wants it, `.husky/pre-push`:
 ## 4. Verify
 
 - `.husky/pre-commit` exists and is executable.
-- `<pm> exec lint-staged` runs clean on a staged change.
+- `<x> lint-staged` runs clean on a staged change.
 - A commit with a deliberate lint error is blocked.
 - `package.json` has `"prepare": "husky"`.
 
