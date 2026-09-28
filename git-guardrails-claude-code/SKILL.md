@@ -9,13 +9,17 @@ Sets up a PreToolUse hook that intercepts and blocks dangerous git commands befo
 
 ## What Gets Blocked
 
-- `git push` (all variants including `--force`)
+- `git push`, in every form
 - `git reset --hard`
-- `git clean -f` / `git clean -fd`
-- `git branch -D`
-- `git checkout .` / `git restore .`
+- `git clean` with `-f` or `--force`, in any flag cluster (`-fd`, `-xfd`)
+- `git branch -D`, and `--delete` with `--force`
+- `git checkout .` and `git restore .`, including `checkout -- .` and `restore --staged --worktree .`
 
-When blocked, Claude sees a message telling it that it does not have authority to access these commands.
+The script splits the command into shell tokens and checks each git subcommand and its flags. It also checks commands after `&&`, `;`, and `|`, inside `$(...)`, and inside `bash -c "..."`. A dangerous phrase inside a commit message or a heredoc body does not block. A command it cannot parse is blocked.
+
+When blocked, Claude sees a message that the user has prevented the command.
+
+Requirements: `python3` on the machine. Known limit: it checks the command text, so a script file that runs git internally is not inspected.
 
 ## Steps
 
@@ -25,14 +29,12 @@ Ask the user: install for **this project only** (`.claude/settings.json`) or **a
 
 ### 2. Copy the hook script
 
-The bundled script is at: [scripts/block-dangerous-git.sh](scripts/block-dangerous-git.sh)
+The hook is two files in [scripts/](scripts/): `block-dangerous-git.sh`, a small wrapper, and `block_dangerous_git.py`, the logic. Copy both to the same folder:
 
-Copy it to the target location based on scope:
+- **Project**: `.claude/hooks/`
+- **Global**: `~/.claude/hooks/`
 
-- **Project**: `.claude/hooks/block-dangerous-git.sh`
-- **Global**: `~/.claude/hooks/block-dangerous-git.sh`
-
-Make it executable with `chmod +x`.
+Make both executable with `chmod +x`.
 
 ### 3. Add hook to settings
 
@@ -82,14 +84,14 @@ If the settings file already exists, merge the hook into existing `hooks.PreTool
 
 ### 4. Ask about customization
 
-Ask if user wants to add or remove any patterns from the blocked list. Edit the copied script accordingly.
+Ask if user wants to add or remove any blocked command. Edit `git_reason()` in the copied `block_dangerous_git.py`, add a case to its self-test, and run the self-test.
 
 ### 5. Verify
 
-Run a quick test:
+Run the self-test. It checks every blocked form and a set of commands that must pass:
 
 ```bash
-echo '{"tool_input":{"command":"git push origin main"}}' | <path-to-script>
+python3 <hooks folder>/block_dangerous_git.py --self-test
 ```
 
-Should exit with code 2 and print a BLOCKED message to stderr.
+It prints `self-test OK`. Do not test by typing a blocked command: the installed hook blocks the test itself.
