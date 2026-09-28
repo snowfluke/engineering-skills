@@ -1,30 +1,50 @@
 ---
 name: work-card
-description: Take one card from the task breakdown and carry it to a pull request. Reads the card, its acceptance criteria, the specs it cites, and the project's rules; checks that the cards it depends on are done; creates the branch with the project's naming pattern; builds the work by card kind (backend, frontend, wiring, e2e, or chore) with the tests each kind requires; runs the full check; then hands off to git-commit and open-pr. Use when an engineer says "take card BE-S2-05", "work on this task", "implement this card", or picks up an issue from the board.
+description: Take one card from the task breakdown, or one GitHub issue, and carry it to a pull request. Reads the card, its acceptance criteria, the specs it cites, and the project's rules; checks that the cards it depends on are done; creates the branch with the project's naming pattern; builds the work by card kind (backend, frontend, wiring, e2e, or chore) with the tests each kind requires; runs the full check; then hands off to git-commit and open-pr. Use when an engineer says "take card BE-S2-05", "work on this task", "implement this card", or picks up an issue from the board.
 ---
 
 # Work a Card
 
 One card, one branch, one pull request.
 
+## Two endings
+
+A card ends in one of two ways. There is no third.
+
+| Ending | What is true |
+| --- | --- |
+| DONE | Every AC the card owns has a test that names its AC ID and passes. The full check passes. The PR is open. |
+| BLOCKED | No PR. You ask the user one question that names the blocker. |
+
+Never end with a list of what is left. "One gap remains", "mostly done", and
+"still open" are not endings. If part of the work belongs to another card, file
+that card or issue first. Then name it in the PR. The pr-hygiene gate refuses a
+PR that says work is left over without a card ID or an issue number.
+
 ## 1. Read the card
 
 Find the card on the board: `docs/task-breakdown/sprint-N.md`, an older
 `docs/TASK_BREAKDOWN.md`, or its issue. Note its ID, title, AC IDs, spec
 links, and the cards it depends on. If a card it depends on is not merged,
-stop and tell the user.
+end BLOCKED.
+
+A card can be a GitHub issue with no board row, for example a SIT or UAT bug.
+Read it with `gh issue view <number>`. The issue number is its ID, and its
+labels give its kind: `type:bug` is a fix with a regression test, because the
+existing tests missed it.
 
 ## 2. Read the rules
 
 Read each AC's GIVEN, WHEN, and THEN; the spec sections the card cites; the
 coding standard and its `pr-hygiene` block; the review checklist; `CLAUDE.md`
 or `AGENTS.md`; and the glossary. If an AC is unclear or conflicts with a
-spec, stop and ask. Do not guess the requirement.
+spec, end BLOCKED with that question. Do not guess the requirement.
 
 ## 3. Branch
 
 Create the branch from the base branch with the pattern in the `pr-hygiene`
-block, for example `feat/BE-S2-05-csv-export`. Check it:
+block, for example `feat/BE-S2-05-csv-export`, or `fix/123-login-timeout` for
+issue 123. Check it:
 
 ```bash
 git switch -c <branch> origin/<base>
@@ -39,6 +59,13 @@ done. For a behaviour card (backend, frontend, wiring, e2e), build it with the
 `tdd` skill, one behaviour at a time. For a chore, make the change and keep
 behaviour the same.
 
+Put the AC ID in the title of each test that proves it, for example
+`test("AC-29.02 exports only the visible rows", ...)`. The gate matches AC IDs
+in the PR body against the changed test files.
+
+Do not leave a to-do tag, a skipped test, a focused test, or a stub that throws
+in the diff. The gate refuses each one on an added line.
+
 Follow the coding standard in every file. Clean up every server, browser, or
 watcher you start.
 
@@ -46,7 +73,8 @@ watcher you start.
 
 Run the project's full check command. It must pass. Run e2e specs light
 locally: only the affected specs, the project's worker cap, one headless
-browser. Confirm the "Done when" of the card's kind holds.
+browser. Confirm the "Done when" of the card's kind holds. If it does not
+hold, keep working. If you cannot make it hold, end BLOCKED.
 
 ## 6. Hand off
 

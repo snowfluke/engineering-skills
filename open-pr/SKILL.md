@@ -45,12 +45,20 @@ Write the title to `/tmp/pr-title.txt` and the body to `/tmp/pr-body.md`.
 
 ```bash
 git diff --name-only origin/<base>...HEAD > /tmp/pr-changed.txt
+git diff origin/<base>...HEAD > /tmp/pr-diff.txt
 python3 .github/scripts/pr_hygiene.py pr --title /tmp/pr-title.txt --body /tmp/pr-body.md \
-  --branch "$(git rev-parse --abbrev-ref HEAD)" --changed /tmp/pr-changed.txt
+  --branch "$(git rev-parse --abbrev-ref HEAD)" --changed /tmp/pr-changed.txt --diff /tmp/pr-diff.txt
 ```
 
-Fix every error and run it again. A BE or FE card that changes no test fails
-here: add the test, do not argue with the gate.
+Fix every error and run it again. Do not argue with the gate. It refuses:
+
+- a BE or FE card that changes no test;
+- an AC ID in the body that no changed test names;
+- a to-do tag, a skipped or focused test, or a throwing stub on an added line;
+- a body line that says work is left over and names no card or issue.
+
+For left-over work, file the card or issue first, then name it on that line.
+If the work is not done and you cannot finish it, do not open the PR.
 
 ## 5. Open and link
 
