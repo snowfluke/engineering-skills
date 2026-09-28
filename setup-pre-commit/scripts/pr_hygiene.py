@@ -177,7 +177,12 @@ def prose_lines(body):
             yield re.sub(r"`[^`]*`", "", line)
 
 
-def check_done(body, changed, need_tests, diff, rules, read_file):
+def own_refs(branch):
+    """The card or issue the branch works on: BE-S2-05 in feat/BE-S2-05-x, #123 in fix/123-x."""
+    return set(WORK_REF.findall(branch)) | {"#" + n for n in re.findall(r"/(\d+)-", branch)}
+
+
+def check_done(body, changed, need_tests, diff, rules, read_file, branch=""):
     errs = []
     for line in prose_lines(body):
         m = LEFTOVER.search(line)
@@ -193,7 +198,11 @@ def check_done(body, changed, need_tests, diff, rules, read_file):
                     texts.append(read_file(f))
                 except OSError:
                     pass  # a deleted test file
-        for ac in sorted(set(re.findall(pattern, body))):
+        mine = own_refs(branch)
+        # An AC on a line that names another card is that card's to prove.
+        elsewhere = {ac for line in prose_lines(body) if set(WORK_REF.findall(line)) - mine
+                     for ac in re.findall(pattern, line)}
+        for ac in sorted(set(re.findall(pattern, body)) - elsewhere):
             if not any(re.search(re.escape(ac) + r"(?![\d.])", t) for t in texts):
                 errs.append(f"{ac} is in the PR body but no changed test names it. "
                             "Put the AC ID in the test title, or drop the AC from this PR.")
@@ -217,7 +226,7 @@ def check_pr(title, body, branch, changed, rules, diff=None, read_file=read):
     kind = card_kind(branch, rules)
     wiring = "wiring" in (title + " " + branch).lower()
     need_tests = set(" ".join(rules["tests-required"]).split())
-    errs += check_done(body, changed, wiring or kind in need_tests, diff, rules, read_file)
+    errs += check_done(body, changed, wiring or kind in need_tests, diff, rules, read_file, branch)
     if changed is not None:
         tests = [f for f in changed if any(re.search(p, f) for p in rules["test-files"])]
         e2e = [f for f in changed if any(re.search(p, f) for p in rules["e2e-files"])]
@@ -286,6 +295,8 @@ tests-required: BE FE
     assert check_pr("feat: CSV export", done, b, ok, rules, read_file=rd) == [], check_pr("feat: CSV export", done, b, ok, rules, read_file=rd)
     assert check_pr("feat: CSV export", done + "- AC-29.02 filters\n", b, ok, rules, read_file=rd), "AC without a test not caught"
     assert check_pr("feat: CSV export", done.replace("29.01", "29.1"), b, ok, rules, read_file=rd), "AC-29.1 must not match AC-29.10"
+    assert check_pr("feat: x", done + "- AC-29.05: the toast is FE-S2-06\n", b, ok, rules, read_file=rd) == [], "an AC owned by another card must pass"
+    assert check_pr("feat: x", done + "- AC-29.05 in BE-S2-05\n", b, ok, rules, read_file=rd), "naming the PR's own card must not exempt an AC"
     assert check_pr("chore: deps", done + "- AC-29.02\n", "chore/TL-S2-01-deps", ["package.json"], rules, read_file=rd) == [], "a chore needs no AC test"
     assert check_pr("feat: x", done + "<!-- List what is out of scope -->\nFills the gap between tasks.\nA partial update route.\n", b, ok, rules, read_file=rd) == [], "comments and feature words must pass"
     for left in ("One gap remains in the filter.", "Filtering is still open.", "Sorting is a follow-up.", "Partially done."):

@@ -10,8 +10,9 @@ Run those checks first, then open the PR.
 
 ## 1. Check the branch and the commits
 
-Read the base branch from the repo (`gh repo view --json defaultBranchRef`) or
-the project's branch model. Then:
+Read the base branch from the project's branch model, from
+`gh repo view --json defaultBranchRef`, or offline from
+`git symbolic-ref refs/remotes/origin/HEAD`. Then:
 
 ```bash
 python3 .github/scripts/pr_hygiene.py branch "$(git rev-parse --abbrev-ref HEAD)"
@@ -36,7 +37,7 @@ its `review_body.py walk` prints the checklist lines for you.
 ## 3. Write the title and the body
 
 - **Title:** the commit-subject pattern from the coding standard, with the card ID.
-- **Body:** read `.github/PULL_REQUEST_TEMPLATE.md` and fill every section. Card: the card ID, and the US and AC IDs it covers. Tests: each test and the AC or behaviour it proves, and how to run it. A wiring card names its e2e flow. Tick a checklist box only for a check you ran.
+- **Body:** read the PR template in `.github/` (`PULL_REQUEST_TEMPLATE.md`, in any letter case) and fill every section. Keep its structure: every heading, table, and checkbox stays. Fill it; never replace it. A reviewer sign-off block stays empty for the reviewer. Card: the card ID, and the US and AC IDs it covers. Tests: each test and the AC or behaviour it proves, and how to run it. A wiring card names its e2e flow. Tick a checklist box only for a check you ran.
 - No attribution line anywhere, and ASCII only.
 
 Write the title to `/tmp/pr-title.txt` and the body to `/tmp/pr-body.md`.

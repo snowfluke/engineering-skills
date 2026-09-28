@@ -25,8 +25,8 @@ PR that says work is left over without a card ID or an issue number.
 
 Find the card on the board: `docs/task-breakdown/sprint-N.md`, an older
 `docs/TASK_BREAKDOWN.md`, or its issue. Note its ID, title, AC IDs, spec
-links, and the cards it depends on. If a card it depends on is not merged,
-end BLOCKED.
+links, and the cards it depends on, when the board records them. If a card it
+depends on is not merged, end BLOCKED.
 
 A card can be a GitHub issue with no board row, for example a SIT or UAT bug.
 Read it with `gh issue view <number>`. The issue number is its ID, and its
@@ -39,6 +39,15 @@ Read each AC's GIVEN, WHEN, and THEN; the spec sections the card cites; the
 coding standard and its `pr-hygiene` block; the review checklist; `CLAUDE.md`
 or `AGENTS.md`; and the glossary. If an AC is unclear or conflicts with a
 spec, end BLOCKED with that question. Do not guess the requirement.
+
+If no spec defines the contract the card needs (the route, its inputs, its
+errors), end BLOCKED. Ask one question, with the contract you propose as the
+recommended answer. Build after the user confirms it.
+
+A card can cite an AC whose THEN clause belongs to another layer, for example
+a backend card that cites a frontend error message. Test the part your layer
+produces. In the PR body, put that AC on a line that names the card that owns
+the rest, for example `AC-29.05: the toast is FE-S2-06`.
 
 ## 3. Branch
 
@@ -71,7 +80,11 @@ watcher you start.
 
 ## 5. Check
 
-Run the project's full check command. It must pass. Run e2e specs light
+Run the project's full check command. It must pass. If the project has no
+single command, run each gate it has: type-check, lint, format, and the tests.
+If a gate needs a service that is not running, such as a database, start it
+the way the development guide says and stop it after. If you cannot start it,
+end BLOCKED. Run e2e specs light
 locally: only the affected specs, the project's worker cap, one headless
 browser. Confirm the "Done when" of the card's kind holds. If it does not
 hold, keep working. If you cannot make it hold, end BLOCKED.
