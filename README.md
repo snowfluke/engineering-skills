@@ -9,7 +9,7 @@ Agent skills for every engineer on the team. Tech-lead pipeline skills live in
 | --- | --- | --- |
 | Build | `tdd` | Build a feature or fix a bug test-first (rework pending) |
 | Build | `diagnose` | Debug a hard bug: reproduce, minimise, hypothesise, instrument, fix, regression-test |
-| Plan | `grill-me` | Stress-test a plan or design before you build it (rework pending) |
+| Plan | `grill-me` | Stress-test a plan one question at a time, and keep a decision log |
 | Ship | `git-commit` | Verify, split into logical commits, and write the commit message |
 | Ship | `release-notes` | Write the body of a GitHub release |
 | Session | `handoff` | Compact a conversation into a handoff document for another agent |
