@@ -1,7 +1,7 @@
 # Engineering Skills
 
 Agent skills for every engineer on the team. Tech-lead pipeline skills live in
-[my-tech-lead-flow](https://github.com/snowfluke/my-tech-lead-flow).
+[tech-lead-skills](https://github.com/snowfluke/tech-lead-skills).
 
 ## Skills
 
