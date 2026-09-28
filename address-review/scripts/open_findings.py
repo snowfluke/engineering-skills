@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""List the OPEN findings of a code-review round, with what each one asks for.
+"""List the OPEN findings of a lead-review round, with what each one asks for.
 
   open_findings.py ROUND_FILE
   open_findings.py --self-test

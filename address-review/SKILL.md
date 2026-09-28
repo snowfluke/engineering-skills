@@ -1,6 +1,6 @@
 ---
 name: address-review
-description: Answer a code review on your own pull request. Reads the latest review round, fixes each OPEN finding until its "Done when" holds, answers each QUESTION, declines a NIT only with a reason, commits and pushes the fixes, replies once per finding ID, and asks for a re-review. Works with the code-review skill's round format, and falls back to plain review comments. Use when the user says "address the review", "fix the review comments", "reply to the reviewer", or a PR has changes requested.
+description: Answer a code review on your own pull request. Reads the latest review round, fixes each OPEN finding until its "Done when" holds, answers each QUESTION, declines a NIT only with a reason, commits and pushes the fixes, replies once per finding ID, and asks for a re-review. Works with the lead-review skill's round format, and falls back to plain review comments. Use when the user says "address the review", "fix the review comments", "reply to the reviewer", or a PR has changes requested.
 ---
 
 # Address Review

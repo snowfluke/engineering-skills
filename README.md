@@ -7,7 +7,7 @@ Agent skills for every engineer on the team. Tech-lead pipeline skills live in
 
 ```text
 card -> work-card -> tdd -> git-commit -> open-pr -> review -> address-review -> merge
-                                                      (the tech lead's code-review)
+                                                      (the tech lead's lead-review)
 ```
 
 The project's hooks and CI check every commit, branch, and pull request

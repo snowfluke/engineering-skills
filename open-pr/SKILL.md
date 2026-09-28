@@ -30,7 +30,7 @@ Run the project's full check command. It must pass.
 Then walk the review checklist against your own diff, item by item. Read the
 checklist from the base branch, not from your branch, for example
 `git show origin/<base>:docs/code-review-checklist/06-tests.md`. Fix every item your
-diff breaks before you open the PR. If the `code-review` skill is installed,
+diff breaks before you open the PR. If the `lead-review` skill is installed,
 its `review_body.py walk` prints the checklist lines for you.
 
 ## 3. Write the title and the body
