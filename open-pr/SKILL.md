@@ -69,5 +69,6 @@ gh pr create --base <base> --title "$(cat /tmp/pr-title.txt)" --body-file /tmp/p
 
 If the card is an issue (a Fix), or the project files an issue per card, put
 `Closes #<issue>` in the Card section, and move the issue's board card to the
-review column. If it does not,
+review column. The one exception is an audit issue, titled `Review: <branch> ...`:
+write `Refs #<issue>`, because only the reviewer closes it. If it does not,
 reference the card ID only. Report the PR URL.
