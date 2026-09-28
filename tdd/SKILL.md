@@ -11,7 +11,9 @@ tests describes behaviour you imagine, not behaviour you have seen.
 
 ## 1. Read the project's test rules
 
-Read `CODING_STANDARD.md`, the review checklist, and `CLAUDE.md` or `AGENTS.md`,
+Read the coding standard and the review checklist (`docs/coding-standard/` and
+`docs/code-review-checklist/`, or `CODING_STANDARD.md` and
+`CODE_REVIEW_CHECKLIST.md` in an older project), and `CLAUDE.md` or `AGENTS.md`,
 if they exist. Read two or three existing tests to learn the runner, the file
 layout, and the naming. The project's rules win. The defaults in step 4 apply
 only where the project says nothing.
