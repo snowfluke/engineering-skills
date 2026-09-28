@@ -16,7 +16,7 @@ hand-off, in the optional pre-push hook, and in CI.
 
   | Found | Formatter | Linter |
   | --- | --- | --- |
-  | Nothing yet (default) | `oxfmt` | `oxlint`, with the anti-slop plugin if the coding standard names it |
+  | Nothing yet (default) | `oxfmt` | `oxlint`, with the anti-slop plugin if the project has it (`tech-lead-setups` installs it) |
   | Prettier config | `prettier` | keep the existing linter |
   | ESLint config | keep the existing formatter | `eslint` |
 
