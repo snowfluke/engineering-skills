@@ -7,7 +7,7 @@ Agent skills for every engineer on the team. Tech-lead pipeline skills live in
 
 | Area | Skill | Use it to |
 | --- | --- | --- |
-| Build | `tdd` | Build a feature or fix a bug test-first (rework pending) |
+| Build | `tdd` | Build a feature or fix a bug test-first, proving each test can fail |
 | Build | `diagnose` | Debug a hard bug: reproduce, minimise, hypothesise, instrument, fix, regression-test |
 | Plan | `grill-me` | Stress-test a plan one question at a time, and keep a decision log |
 | Ship | `git-commit` | Verify, split into logical commits, and write the commit message |
