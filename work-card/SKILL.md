@@ -89,6 +89,18 @@ locally: only the affected specs, the project's worker cap, one headless
 browser. Confirm the "Done when" of the card's kind holds. If it does not
 hold, keep working. If you cannot make it hold, end BLOCKED.
 
+For a frontend or wiring card, also check the page in a real browser. Tests
+pass on markup; a person sees the page.
+
+1. Reuse the running dev server. If none runs, start it and note its PID and port.
+2. Open the page headless with the project's Playwright, or with the browser tool your harness has.
+3. Wait for the network to go idle before you read the page.
+4. Walk each AC outcome the card owns: the text, and the loading, empty, and error states. Take one screenshot per state into `tmp/`, and look at each one.
+5. Close the browser. Stop the server if you started it.
+
+Do not commit the screenshots or the check script. A state that looks wrong is
+a failed check, even when the tests pass.
+
 ## 6. Hand off
 
 Commit with `git-commit`, with the card ID in each commit. Then open the pull
