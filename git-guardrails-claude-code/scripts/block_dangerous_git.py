@@ -35,8 +35,42 @@ def strip_heredocs(command):
     return "\n".join(out)
 
 
+def strip_comments(command):
+    """Drop shell comments (a # that starts a word, outside quotes, to the end of its line) and turn
+    each unquoted newline into a command separator. shlex alone cuts at the # inside ${x#y}, which
+    leaves quotes unbalanced, and glues the words on either side of a newline into one token."""
+    out, quote, i = [], None, 0
+    while i < len(command):
+        c = command[i]
+        if quote:
+            if c == "\\" and quote == '"' and i + 1 < len(command):
+                out.append(command[i:i + 2])
+                i += 2
+                continue
+            if c == quote:
+                quote = None
+        elif c == "\\" and i + 1 < len(command):
+            out.append(command[i:i + 2])
+            i += 2
+            continue
+        elif c in "'\"":
+            quote = c
+        elif c == "#" and (i == 0 or command[i - 1] in " \t\n;&|("):
+            while i < len(command) and command[i] != "\n":
+                i += 1
+            continue
+        elif c == "\n":
+            out.append(" ; ")
+            i += 1
+            continue
+        out.append(c)
+        i += 1
+    return "".join(out)
+
+
 def segments(command):
-    lexer = shlex.shlex(strip_heredocs(command), posix=True, punctuation_chars=True)
+    lexer = shlex.shlex(strip_comments(strip_heredocs(command)), posix=True, punctuation_chars=True)
+    lexer.commenters = ""  # strip_comments already removed the real comments
     lexer.whitespace = " \t\r"  # keep newlines as command separators
     lexer.whitespace_split = True
     seg = []
@@ -114,6 +148,8 @@ def self_test():
         "cd repo && git reset --hard", "git -C repo reset --hard", "/usr/bin/git push",
         'bash -c "git reset --hard"', "FOO=1 git push", "echo $(git reset --hard)",
         'git commit -m "unclosed',
+        'echo ${x#*:} && git push', "ls # a comment\ngit push", "a=1; git push # then done",
+        "ls\ngit push", "cd repo\ngit reset --hard",
     ]
     allowed = [
         "git status", "git log -- .", "git diff .", "git add .", "git checkout -b feature",
@@ -121,6 +157,8 @@ def self_test():
         'git commit -m "document why reset --hard is blocked"',
         "git commit -F - <<'EOF'\nwe don't run git reset --hard or git push here\nEOF",
         'echo "git push"', "grep -rn 'git push' docs",
+        'x=a:b; echo ${x#*:} "${x%%:*}"', "ls # don't git push", "echo a#b", "# git push\nls",
+        'git commit -m "first line\n\ngit push happens later, by hand"',
     ]
     for c in blocked:
         assert check(c), f"should block: {c!r}"
