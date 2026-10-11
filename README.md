@@ -69,6 +69,7 @@ push.
 | A bug issue from SIT or UAT | `work-card` with the issue number |
 | A plan you are unsure of | `grill-me` |
 | A bug you cannot explain | `diagnose` |
+| A slow or flaky browser test stage | `e2e` |
 | Work done, not yet committed | `git-commit`, then `open-pr` |
 | The reviewer asked for changes, on a PR or an audit issue | `address-review` |
 | A project without commit hooks | `setup-pre-commit` |
@@ -92,6 +93,8 @@ one question to the user. There is no third ending.
 | Build | `work-card` | Take a card or an issue to a pull request, with the tests its kind requires |
 | Build | `tdd` | Build a feature or fix a bug test-first, proving each test can fail |
 | Build | `diagnose` | Debug a hard bug: reproduce, minimise, hypothesise, instrument, fix, regression-test |
+| Build | `e2e` | Set up or speed up a Playwright suite: measure per project, shard CI with input-key skips, pick workers from the machine, no retries |
+| Build | `shadcn` | Add, restyle and compose shadcn/ui components, and apply a DESIGN.md as a design system (vendored from shadcn/ui, MIT) |
 | Plan | `grill-me` | Stress-test a plan one question at a time, and keep a decision log |
 | Ship | `git-commit` | Verify, split into logical commits, and write the commit message |
 | Ship | `open-pr` | Check the branch and commits, self-review, fill the PR template, and open the PR |
