@@ -1,0 +1,77 @@
+# One job per shard, each with its own services and a fresh instance. A shard that passed on the
+# same inputs skips itself; one job answers for the required check. Pin every action to a commit
+# SHA in your own copy; the tags here are for reading.
+jobs:
+  e2e:
+    name: browser end-to-end (${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [read, flows, write, crawl]
+    env:
+      E2E_SHARD: ${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      # Before any install: the key script imports only the shard table.
+      - name: shard input key
+        id: key
+        run: echo "key=e2e-pass-${{ matrix.shard }}-$(bun e2e/lib/shard-key.ts "$E2E_SHARD")" >> "$GITHUB_OUTPUT"
+      - name: passed before on these inputs?
+        id: passed
+        uses: actions/cache/restore@v4
+        with:
+          path: .e2e-pass
+          key: ${{ steps.key.outputs.key }}
+          lookup-only: true
+      - name: skip, this shard passed on the same inputs
+        if: steps.passed.outputs.cache-hit == 'true'
+        run: echo "::notice::${{ matrix.shard }} passed before on these inputs; skipped."
+      # The slowest step first: image pulls run while packages install.
+      - name: start the services
+        if: steps.passed.outputs.cache-hit != 'true'
+        run: docker compose -f compose.test.yml up -d
+      - uses: actions/cache@v4
+        if: steps.passed.outputs.cache-hit != 'true'
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+      - run: bun install --frozen-lockfile
+        if: steps.passed.outputs.cache-hit != 'true'
+      - name: wait for the services, five tries
+        if: steps.passed.outputs.cache-hit != 'true'
+        run: |
+          for try in 1 2 3 4 5; do docker compose -f compose.test.yml up -d --wait && exit 0; sleep 10; done
+          docker compose -f compose.test.yml ps; docker compose -f compose.test.yml logs --tail 50; exit 1
+      - run: bunx playwright test
+        if: steps.passed.outputs.cache-hit != 'true'
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.passed.outputs.cache-hit != 'true'
+        with:
+          name: e2e-report-${{ matrix.shard }}
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+      - name: stop the services
+        if: always()
+        run: docker compose -f compose.test.yml down -v
+      - name: record the pass
+        if: success() && steps.passed.outputs.cache-hit != 'true'
+        run: mkdir -p .e2e-pass && echo "${{ github.sha }}" > .e2e-pass/passed
+      - uses: actions/cache/save@v4
+        if: success() && steps.passed.outputs.cache-hit != 'true'
+        with:
+          path: .e2e-pass
+          key: ${{ steps.key.outputs.key }}
+
+  # The branch rule requires this one name; the shards answer through it.
+  e2e-result:
+    name: browser end-to-end
+    if: always()
+    runs-on: ubuntu-latest
+    needs: e2e
+    steps:
+      - run: test "${{ needs.e2e.result }}" = "success"
