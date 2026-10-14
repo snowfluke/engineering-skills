@@ -55,6 +55,8 @@ jobs:
             playwright-report
             test-results
           if-no-files-found: ignore
+          # A private repo's artifact quota is small; a failed run's trace is read within days.
+          retention-days: 7
       - name: stop the services
         if: always()
         run: docker compose -f compose.test.yml down -v
