@@ -101,6 +101,11 @@ pass on markup; a person sees the page.
 Do not commit the screenshots or the check script. A state that looks wrong is
 a failed check, even when the tests pass.
 
+If the card changes a trust boundary (authentication, sessions, input parsing, file upload, tenant scoping, secrets, or outbound requests), review the changed files with the `security-audit` skill in guidance mode
+before you hand off. Fix each confirmed finding, and add a test that fails
+without the fix. A finding you cannot settle from the source goes in the PR
+body as an open question. If the skill is not installed, say so in the PR body.
+
 ## 6. Hand off
 
 Commit with `git-commit`, with the card ID in each commit. Then open the pull

@@ -30,6 +30,11 @@ one stops halfway:
 | `work-card` | `tdd`, `git-commit`, `open-pr` |
 | `address-review` | `git-commit`, `open-pr` |
 
+`work-card` also uses `security-audit` from
+[cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill)
+when a card changes a trust boundary. Install it with
+`npx skills add cloudflare/security-audit-skill -g -s security-audit`.
+
 ### One project only
 
 Run the command in the project root without `-g`. The skills go into the
